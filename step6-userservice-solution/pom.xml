@@ -25,15 +25,33 @@
 	</properties>
 
 	<dependencies>
-		<!-- Dewpendency for spring-boot-starter-data-jpa -->
+		<!-- Dependency for spring-boot-starter-data-jpa -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.0.0.RELEASE</version>
+		</dependency>
 
 
-		<!-- Dewpendency for spring-boot-starter-web -->
 
-		<!-- Dewpendency for mysql-connector-java -->
+		<!-- Dependency for spring-boot-starter-web -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.0.0.RELEASE</version>
+		</dependency>
 
+		<!-- Dependency for mysql-connector-java -->
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.11</version>
+		</dependency>
 
-		<!-- Dewpendency for spring-boot-starter-test -->
+		<!-- Dependency for spring-boot-starter-test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
