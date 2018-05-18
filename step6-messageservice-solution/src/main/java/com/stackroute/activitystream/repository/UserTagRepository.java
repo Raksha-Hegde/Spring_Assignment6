@@ -25,7 +25,7 @@ public interface UserTagRepository extends JpaRepository<UserTag, String>{
 	* 
 	* Write a query to retrieve UserTag object from database matching with username and tag.
 	* */	
-	@Query
+	@Query("select u from UserTag u where u.username = :username and u.tag = :tag")
 	public UserTag getUserTag(String username, String tag);
 	
 }

@@ -18,9 +18,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspectUser {
 
-	/*Write loggers for each of the methods of REST controllers, 
-    any particular method will have all the four aspectJ annotation
-    (@Before, @After, @AfterReturning, @AfterThrowing).*/
-    
-	
+	private static final Logger logger = LoggerFactory.getLogger(LoggingAspectUser.class);
+
+	@Before("execution(* com.stackroute.activitystream.controller.UserController.*(..))")
+	public void logBeforeSave(JoinPoint joinPoint) {
+		logger.info("============@Before==========");
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("*********************************");
+	}
+
+	@After("execution(* com.stackroute.activitystream.controller.UserController.*(..))")
+	public void logAfterSave(JoinPoint joinPoint) {
+		logger.info("============@After==========");
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+		logger.debug("*********************************");
+	}
+
+	@AfterReturning(pointcut = "execution(* com.stackroute.activitystream.controller.UserController.*(..))", returning = "result")
+	public void logAfterReturningSave(JoinPoint joinPoint, Object result) {
+		logger.debug("============@AfterReturning==========");
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+		logger.debug("*********************************");
+	}
+
+	@AfterThrowing(pointcut = "execution(* com.stackroute.activitystream.controller.UserController.*(..))", throwing = "error")
+	public void logAfterThrowingSave(JoinPoint joinPoint, Throwable error) {
+		logger.info("============@AfterThrowing==========");
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+		logger.debug("Exception : " + error);
+		logger.debug("*********************************");
+	}
 }

@@ -20,7 +20,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspectMessage {
 
-	/*Write loggers for each of the methods of REST controller, 
-    any particular method will have all the four aspectJ annotation
-    (@Before, @After, @AfterReturning, @AfterThrowing).*/
+	private static final Logger logger = LoggerFactory.getLogger(LoggingAspectMessage.class);
+
+	@Before("execution(* com.stackroute.activitystream.controller.MessageController.*(..))")
+	public void logBefore(JoinPoint joinPoint) {
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+	}
+
+	@After("execution(* com.stackroute.activitystream.controller.MessageController.*(..))")
+	public void logAfter(JoinPoint joinPoint) {
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+	}
+
+	@AfterReturning(pointcut = "execution(* com.stackroute.activitystream.controller.MessageController.*(..))", returning = "result")
+	public void logAfterReturning(JoinPoint joinPoint, Object result) {
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+	}
+
+	@AfterThrowing(pointcut = "execution(* com.stackroute.activitystream.controller.MessageController.*(..))", throwing = "error")
+	public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
+		logger.debug("Method Name : " + joinPoint.getSignature().getName());
+		logger.debug("Method arguments : " + Arrays.toString(joinPoint.getArgs()));
+		logger.debug("Exception : " + error);
+	}
 }
