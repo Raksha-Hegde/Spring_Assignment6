@@ -27,7 +27,8 @@ import com.stackroute.activitystream.service.MessageServiceImpl;
  * format. Starting from Spring 4 and above, we can use @RestController annotation which 
  * is equivalent to using @Controller and @ResposeBody annotation
  */
-
+@RestController
+@RequestMapping("/api/message")
 public class MessageController {
 	/*
 	 * From the problem statement, we can understand that the application	 requires us to 
@@ -47,14 +48,15 @@ public class MessageController {
 	 * functionalities mentioned above.
 	 * 
 	 */
-	
+
 	/*
 	 * Autowiring should be implemented for the MessageService. Please note that 
 	 * we should not create any object using the new keyword
 	 * */
-	
-	
-	
+	@Autowired
+	MessageService messageService;
+
+
 	/* Define a handler method which will send a message to a circle by reading the Serialized message
 	 * object from request body and save the message in message table in database. Please 
 	 * note that the loggedIn userID should be taken as the senderId for the message. 
@@ -65,10 +67,20 @@ public class MessageController {
 	 * 
 	 * This handler method should map to the URL "/api/message/sendMessageToCircle/{circleName}" using HTTP POST method"
 	 * where "circleName" should be replaced by the destination circle name without {} 
-	*/
-	
-	
-	
+	 */
+	@PostMapping(value = "/sendMessageToCircle/{circleName}")
+	public ResponseEntity<Message> sendMessageToCircle(@PathVariable("circleName") String circlename,
+			@RequestBody Message message) {
+		boolean status = messageService.sendMessageToCircle(circlename, message);
+		if (status) {
+			return (new ResponseEntity<Message>(HttpStatus.OK));
+		} else {
+			return (new ResponseEntity<Message>(HttpStatus.INTERNAL_SERVER_ERROR));
+		}
+	}
+
+
+
 	/* Define a handler method which will send a message to an individual user by reading the Serialized message
 	 * object from request body and save the message in message table in database. Please 
 	 * note that the loggedIn userID should be taken as the senderId for the message. 
@@ -79,11 +91,21 @@ public class MessageController {
 	 * 
 	 * This handler method should map to the URL "/api/message/sendMessageToUser/{receiverId}" using HTTP POST method"
 	 * where "receiverId" should be replaced by the recipient user name without {} 
-	*/
-	
-	
-	
-	
+	 */
+	@PostMapping(value = "/sendMessageToUser/{receiverId}")
+	public ResponseEntity<Message> sendMessageToUser(@PathVariable("receiverId") String receiver,
+			@RequestBody Message message) {
+		if (messageService.sendMessageToUser(receiver, message)) {
+			return (new ResponseEntity<Message>(HttpStatus.OK));
+		} else {
+			return (new ResponseEntity<Message>(HttpStatus.INTERNAL_SERVER_ERROR));
+		}
+
+	}
+
+
+
+
 	/* Define a handler method which will get all messages sent by a specific user to another specific user. Please 
 	 * note that there can be huge number of messages which has been transmitted between two users. Hence, retrieving
 	 * messages partially will help to improve performance. Pagination can be implemented here. 
@@ -97,11 +119,16 @@ public class MessageController {
 	 * where "senderUsername" should be replaced by a valid user name without {}
 	 * and "receiverUsername" should be replaced by a valid user name without {}
 	 * and "pageNumber" should be replaced by the numeric page number that we are looking for without {}
-	*/
-	
-	
-	
-	
+	 */
+	@GetMapping(value = "/getMessagesByUser/{senderUsername}/{receiverUserName}/{pageNumber}")
+	public ResponseEntity<List<Message>> getAllMessageByUser(@PathVariable("senderUsername") String senderUsername,
+			@PathVariable("receiverUserName") String receiverUserName, @PathVariable("pageNumber") int pageNumber) {
+		List<Message> message = messageService.getMessagesFromUser(senderUsername, receiverUserName, pageNumber);
+		return (new ResponseEntity<List<Message>>(message, HttpStatus.OK));
+	}
+
+
+
 	/* Define a handler method which will get all messages sent to a specific circle by all users. Please 
 	 * note that there can be huge number of messages which has been transmitted to a circle. Hence, retrieving
 	 * messages partially will help to improve performance. Pagination can be implemented here. 
@@ -114,10 +141,15 @@ public class MessageController {
 	 * using HTTP GET method"
 	 * where "circleName" should be replaced by a valid user name without {}
 	 * and "pageNumber" should be replaced by the numeric page number that we are looking for without {}
-	*/
-	
-	
-	
+	 */
+	@GetMapping(value = "/getMessagesByCircle/{circleName}/{pageNumber}")
+	public ResponseEntity<List<Message>> getMessagesByCircle(@PathVariable("circleName") String circleName,
+			@PathVariable("pageNumber") int pageNumber) {
+		List<Message> message = messageService.getMessagesFromCircle(circleName, pageNumber);
+		return (new ResponseEntity<List<Message>>(message, HttpStatus.OK));
+	}
+
+
 	/* As per our problem statement, each message can have some tags. We will learn how to extract the tags from 
 	 * the messages in future, but here we would like to define a handler method which will get all tags which has been
 	 * extracted from all messages.  
@@ -127,12 +159,16 @@ public class MessageController {
 	 * 
 	 * This handler method should map to the URL 
 	 * "/api/message/listAllTags" using HTTP GET method"
-	 
-	*/
-	
-	
-	
-	
+
+	 */
+	@GetMapping(value = "/listAllTags")
+	public ResponseEntity<List<String>> listAllTags() {
+
+		return (new ResponseEntity<List<String>>(messageService.listTags(), HttpStatus.OK));
+	}
+
+
+
 	/* Define a handler method which will get all messages containing a specific tag. Please note that there 
 	 * can be huge number of messages which has the same tag. Hence, retrieving
 	 * messages partially will help to improve performance. Pagination can be implemented here. 
@@ -145,10 +181,20 @@ public class MessageController {
 	 * using HTTP GET method"
 	 * where "tag" should be replaced by a tag(string) without {}
 	 * and "pageNumber" should be replaced by the numeric page number that we are looking for without {}
-	*/
-	
-	
-	
+	 */
+	@GetMapping(value = "/showMessagesWithTag/{tag}/{pageNumber}")
+	public ResponseEntity<List<Message>> getMessageWithTag(@PathVariable("tag") String tag,
+			@PathVariable("pageNumber") int pageNumber) {
+		List<Message> message = messageService.showMessagesWithTag(tag, pageNumber);
+		if (message != null) {
+			return (new ResponseEntity<List<Message>>(message, HttpStatus.OK));
+		} else {
+			return (new ResponseEntity<List<Message>>(HttpStatus.NO_CONTENT));
+		}
+
+	}
+
+
 	/* As per our problem statement, user can subscribe to one or more tag(s). Hence, the user will be able to see all
 	 * messages containing those tags. Define a handler method which will subscribe a specific user a specific tag. 
 	 * This handler method should return any one of the status messages basis on different
@@ -162,11 +208,11 @@ public class MessageController {
 	 * using HTTP PUT method"
 	 * where "username" should be replaced by a valid user name without {}
 	 * and "tag" should be replaced by a valid tag without {}
-	*/
-	
-	
-	
-	
+	 */
+
+
+
+
 	/* As per our problem statement, user can unsubscribe from one or more tag(s). Define a handler method which 
 	 * will unsubscribe a specific user from a specific tag. 
 	 * This handler method should return any one of the status messages basis on different
@@ -180,11 +226,19 @@ public class MessageController {
 	 * using HTTP PUT method"
 	 * where "username" should be replaced by a valid user name without {}
 	 * and "tag" should be replaced by a valid tag without {}
-	*/
-	
-	
-	
-	
+	 */
+	@PutMapping(value = "/unsubscribe/{username}/{tag}")
+	public ResponseEntity<?> unsubscribeUserToTag(@PathVariable("username") String username,
+			@PathVariable("tag") String tag) {
+		if (messageService.unsubscribeUserToTag(username, tag)) {
+			return (new ResponseEntity<>(HttpStatus.OK));
+		} else {
+			return (new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+		}
+	}
+
+
+
 	/* Define a handler method which will show all the subscribed tags by a specific user. 
 	 * This handler method should return any one of the status messages basis on different
 	 * situations:
@@ -194,5 +248,10 @@ public class MessageController {
 	 * "/api/message/tags/search/user/{username}" 
 	 * using HTTP GET method"
 	 * where "username" should be replaced by a valid user name without {}
-	*/
+	 */
+	@GetMapping(value = "/tags/search/user/{username}")
+	public ResponseEntity<List<String>> getTagsByUser(@PathVariable("username") String username) {
+		List<String> userTags = messageService.listMyTags(username);
+		return new ResponseEntity<List<String>>(userTags, HttpStatus.OK);
 	}
+}

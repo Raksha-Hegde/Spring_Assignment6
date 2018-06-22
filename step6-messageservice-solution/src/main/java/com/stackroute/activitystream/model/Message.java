@@ -51,9 +51,7 @@ public class Message {
 		return messageId;
 	}
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	} 
+	
 	public String getSenderName() { return
 		senderName;
 	}
