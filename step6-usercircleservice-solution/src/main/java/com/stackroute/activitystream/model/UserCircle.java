@@ -28,7 +28,7 @@ public class UserCircle {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String userCircleId;
+	private int userCircleId;
 	private String username;
 	private String circleName;
 
@@ -40,7 +40,7 @@ public class UserCircle {
 	public UserCircle() {
 	}
 
-	public String getUserCircleId() {
+	public int getUserCircleId() {
 		return userCircleId;
 	}
 

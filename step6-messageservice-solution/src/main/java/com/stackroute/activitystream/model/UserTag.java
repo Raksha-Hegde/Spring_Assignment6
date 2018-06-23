@@ -37,11 +37,11 @@ public class UserTag {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String userTagId;
+	private int userTagId;
 	private String username;
 	private String tag;
 
-	public String getUserTagId() {
+	public int getUserTagId() {
 		return userTagId;
 	}
 

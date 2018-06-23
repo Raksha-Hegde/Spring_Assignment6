@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class Message {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String messageId;
+	private int messageId;
 	private String senderName;
 	private String receiverId;
 	private String circleName;
@@ -47,7 +47,7 @@ public class Message {
 	public Message() {
 	}
 
-	public String getMessageId() {
+	public int getMessageId() {
 		return messageId;
 	}
 
